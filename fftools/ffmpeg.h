@@ -132,6 +132,8 @@ typedef struct OptionsContext {
     int        nb_hwaccel_output_formats;
     SpecifierOpt *autorotate;
     int        nb_autorotate;
+    SpecifierOpt *autoscale;
+    int        nb_autoscale;
 
     /* output options */
     StreamMap *stream_maps;
@@ -284,6 +286,7 @@ typedef struct FilterGraph {
 
     AVFilterGraph *graph;
     int reconfiguration;
+    int autoscale;
 
     InputFilter   **inputs;
     int          nb_inputs;
@@ -334,6 +337,7 @@ typedef struct InputStream {
     int guess_layout_max;
 
     int autorotate;
+    int autoscale;
 
     int fix_sub_duration;
     struct { /* previous decoded subtitle and related variables */
