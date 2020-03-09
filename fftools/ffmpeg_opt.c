@@ -897,6 +897,10 @@ static void add_input_streams(OptionsContext *o, AVFormatContext *ic)
                 if (!strcmp(hwaccel, "nvdec") || !strcmp(hwaccel, "cuvid"))
                     hwaccel = "cuda";
 
+                // Disable autoscale for VAAPI VP9 decode
+                if (!strcmp(hwaccel, "vaapi") && ist->dec->id == AV_CODEC_ID_VP9)
+                    ist->autoscale = 0;
+
                 if (!strcmp(hwaccel, "none"))
                     ist->hwaccel_id = HWACCEL_NONE;
                 else if (!strcmp(hwaccel, "auto"))
