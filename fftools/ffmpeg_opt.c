@@ -62,6 +62,7 @@ static const char *opt_name_hwaccels[]                  = {"hwaccel", NULL};
 static const char *opt_name_hwaccel_devices[]           = {"hwaccel_device", NULL};
 static const char *opt_name_hwaccel_output_formats[]    = {"hwaccel_output_format", NULL};
 static const char *opt_name_autorotate[]                = {"autorotate", NULL};
+static const char *opt_name_autoscale[]                 = {"autoscale", NULL};
 static const char *opt_name_max_frames[]                = {"frames", "aframes", "vframes", "dframes", NULL};
 static const char *opt_name_bitstream_filters[]         = {"bsf", "absf", "vbsf", NULL};
 static const char *opt_name_codec_tags[]                = {"tag", "atag", "vtag", "stag", NULL};
