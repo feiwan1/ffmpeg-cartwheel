@@ -62,6 +62,7 @@ typedef struct VAAPIEncodeH265Context {
     int tier;
     int level;
     int sei;
+    int low_delay_b;
 
     // Derived settings.
     int fixed_qp_idr;
@@ -899,8 +900,9 @@ static int vaapi_encode_h265_init_slice_params(AVCodecContext *avctx,
     sh->slice_segment_address           = slice->block_start;
 
     sh->slice_type = hpic->slice_type;
+    priv->low_delay_b = ctx->low_power ? 1 : priv->low_delay_b;
     // driver requires low delay B frame in low power mode
-    if (sh->slice_type == HEVC_SLICE_P && ctx->low_power)
+    if (sh->slice_type == HEVC_SLICE_P && priv->low_delay_b)
         sh->slice_type = HEVC_SLICE_B;
 
     sh->slice_pic_order_cnt_lsb = hpic->pic_order_cnt &
@@ -1070,7 +1072,7 @@ static int vaapi_encode_h265_init_slice_params(AVCodecContext *avctx,
 
     // Driver requires low delay B frame and matched ref_pic_list0/1[]
     // for low power mode
-    if (pic->type == PICTURE_TYPE_P && ctx->low_power) {
+    if (pic->type == PICTURE_TYPE_P && priv->low_delay_b) {
         vslice->slice_type = HEVC_SLICE_B;
         for (i = 0; i < FF_ARRAY_ELEMS(vslice->ref_pic_list0); i++) {
             vslice->ref_pic_list1[i].picture_id = vslice->ref_pic_list0[i].picture_id;
@@ -1278,6 +1280,9 @@ static const AVOption vaapi_encode_h265_options[] = {
       0, AV_OPT_TYPE_CONST,
       { .i64 = SEI_MASTERING_DISPLAY | SEI_CONTENT_LIGHT_LEVEL },
       INT_MIN, INT_MAX, FLAGS, "sei" },
+
+    { "low_delay_b", "Use low delay B frame instead of P frame",
+      OFFSET(low_delay_b), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 1, FLAGS },
 
     { NULL },
 };
