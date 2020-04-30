@@ -274,6 +274,15 @@ static const struct {
 #ifdef VA_FOURCC_P010
     MAP(P010, P010),
 #endif
+#ifdef VA_FOURCC_P016
+    MAP(P016, P012),
+#endif
+#ifdef VA_FOURCC_Y216
+    MAP(Y216, Y212),
+#endif
+#ifdef VA_FOURCC_Y416
+    MAP(Y416, Y412),
+#endif
 #ifdef VA_FOURCC_I010
     MAP(I010, YUV420P10),
 #endif
@@ -335,7 +344,9 @@ static int vaapi_decode_find_best_format(AVCodecContext *avctx,
         format = vaapi_format_map[j].pix_fmt;
         av_log(avctx, AV_LOG_DEBUG, "Considering format %#x -> %s.\n",
                fourcc, av_get_pix_fmt_name(format));
-
+        if (av_get_bits_per_pixel(av_pix_fmt_desc_get(source_format)) !=
+            av_get_bits_per_pixel(av_pix_fmt_desc_get(format)))
+            continue;
         best_format = av_find_best_pix_fmt_of_2(format, best_format,
                                                 source_format, 0, NULL);
         if (format == best_format)
